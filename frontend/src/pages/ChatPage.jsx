@@ -7,14 +7,17 @@ import MessageContainer from '../components/MessageContainer';
 import usePopToast from "../customHooks/usePopToast";
 import {conversationsAtom} from '../atoms/messagesAtom';
 import { useRecoilState } from "recoil";
+import {selectedChatAtom} from '../atoms/messagesAtom';
 
 const ChatPage = () => {
   const popToast = usePopToast();
   const [loadConversations, setLoadConversations] = useState(true);
   const [conversations, setConversations] = useRecoilState(conversationsAtom);
+  const [selectedChat, setSelectedChat] = useRecoilState(selectedChatAtom);
   useEffect(() => {
 
     const getConversations = async () => {
+      setLoadConversations(true);
       try {
         const res = await fetch("/api/messages/conversations");
         const data  = await res.json();
@@ -43,7 +46,7 @@ const ChatPage = () => {
             <Text fontWeight={700} color={useColorModeValue("gray.600", "gray.400")}>Your Conversations</Text>
             <form action="">
                 <Flex alignItems={"center"} gap={2}>
-                    <Input placeholder='Search for a user'/>
+                    <Input placeholder='Search user'/>
                     <Button size={"sm"}>
                         <SearchIcon/>
                     </Button>
@@ -70,11 +73,14 @@ const ChatPage = () => {
             
             
         </Flex>
-        {/* <Flex flex={70} borderRadius={"md"} p={2} flexDirection={"column"} alignItems={"center"} justifyContent={"center"} height={"400px"}>
+        {!selectedChat._id && (
+          <Flex flex={70} borderRadius={"md"} p={2} flexDirection={"column"} alignItems={"center"} justifyContent={"center"} height={"400px"}>
           <GiConversation size={70}/>
           <Text>Select a Conversation to start messaging</Text>
-        </Flex> */}
-        <MessageContainer/>
+        </Flex>
+        )}
+        {selectedChat._id && <MessageContainer/>}
+        
         {/* <Flex flex={70}>Message container</Flex> */}
       </Flex>
     </Box>
