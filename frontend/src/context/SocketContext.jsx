@@ -1,0 +1,48 @@
+import { useState, useEffect} from "react";
+import { createContext, useContext} from "react";
+import { useRecoilValue } from "recoil";
+import io from "socket.io-client";
+import userAtom from "../atoms/userAtom";
+
+const SocketContext = createContext();
+
+
+export const useSocket = () => {
+    return useContext(SocketContext);
+}
+
+export const SocketContextProvider = ({children}) => {
+
+
+    const [socket, setSocket] = useState(null);
+    const [onlineUsers, setOnlineUsers] = useState([]);
+    const loggedInUser = useRecoilValue(userAtom);
+
+    useEffect(() => {
+        
+        const socket = io("http://localhost:3000",{
+            query:{
+                userId : loggedInUser?._id
+            }
+        });
+
+        setSocket(socket);
+        socket.on("getOnlineUsers", (users) =>{
+            setOnlineUsers(users);
+        });
+
+        
+        return () => socket && socket.close();
+
+    },[loggedInUser?._id]); // removed socket from dependency array 
+
+    console.log(onlineUsers, "Online users");
+    
+    return (
+        <SocketContext.Provider value={{socket, onlineUsers}}>
+            {children}
+        </SocketContext.Provider>
+    )
+}
+
+//
