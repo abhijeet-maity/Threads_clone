@@ -14,6 +14,8 @@ const ChatPage = () => {
   const [loadConversations, setLoadConversations] = useState(true);
   const [conversations, setConversations] = useRecoilState(conversationsAtom);
   const [selectedChat, setSelectedChat] = useRecoilState(selectedChatAtom);
+  const [searchUserText, setSearchUserText] = useState("");
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
 
     const getConversations = async () => {
@@ -37,6 +39,17 @@ const ChatPage = () => {
     getConversations();
     },[popToast, setConversations])
 
+    const searchUser = async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      try {
+        
+      } catch (error) {
+        popToast("Error", error.message, "error");
+      } finally{
+        setLoading(false); //
+      }
+    }
 
     return (
     <Box position={"absolute"} left={"50%"} transform={"translateX(-50%)"} p={4} w={{base: "100%", md: "80%", lg: "750px"}} >
@@ -44,11 +57,11 @@ const ChatPage = () => {
       <Flex gap={4} flexDirection={{base: "column", md: "row"}} maxW={{sm: "400px", md: "full"}} mx={"auto"}>
         <Flex flex={30} gap={2} flexDirection={"column"} maxW={{sm : "250px", md: "full"}} mx={"auto"}>
             <Text fontWeight={700} color={useColorModeValue("gray.600", "gray.400")}>Your Conversations</Text>
-            <form action="">
+            <form action="" onSubmit={searchUser}>
                 <Flex alignItems={"center"} gap={2}>
-                    <Input placeholder='Search user'/>
-                    <Button size={"sm"}>
-                        <SearchIcon/>
+                    <Input placeholder='Search user' onChange={(e) => searchUserText(e.target.value)}/>
+                    <Button size={"md"} onClick={searchUser} isLoading={loading}>
+                        <SearchIcon />
                     </Button>
                 </Flex>
             </form>

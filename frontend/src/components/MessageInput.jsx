@@ -3,13 +3,15 @@ import { Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import { IoSendSharp } from 'react-icons/io5';
 import usePopToast from '../customHooks/usePopToast';
 import { selectedChatAtom } from '../atoms/messagesAtom';
-import { useRecoilValue } from 'recoil';
+import { conversationsAtom } from '../atoms/messagesAtom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 const MessageInput = ({setMessages, messages}) => {
 
   const [messageText, setMessageText] = useState("");
   const popToast = usePopToast();
   const selectedChat = useRecoilValue(selectedChatAtom);
+  const setConversations = useSetRecoilState(conversationsAtom);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +39,27 @@ const MessageInput = ({setMessages, messages}) => {
       }
       console.log("chat msg data",data);
 
+      //???? adding one more message object inside conversation for that selected user.
       setMessages((messages) => [...messages, data]);
+
+      //????? To update the last message to show it on the chat selection panel.
+      setConversations(prev => {
+        const updatedOne = prev.map(conv => {
+          if(conv._id === selectedChat._id) {
+            return {
+              ...conv,
+              lastMessage: {
+                text: messageText,
+                sender: data.sender
+              }
+            }
+          }
+          return conv;
+      })
+      return updatedOne;
+    }),
+
+      setMessageText("")
       console.log("messages",messages);
     } catch (error) {
       popToast("Error", error.message, "error");
