@@ -1,21 +1,48 @@
+import React, {useEffect, useState} from 'react'
 import { SearchIcon } from '@chakra-ui/icons'
 import { Box, Flex, Input, useColorModeValue, Button, Text, SkeletonCircle, Skeleton } from '@chakra-ui/react'
-import React, {useEffect, useState} from 'react'
 import Conversation from '../components/Conversation'
 import { GiConversation } from 'react-icons/gi';
 import MessageContainer from '../components/MessageContainer';
 import usePopToast from "../customHooks/usePopToast";
 import {conversationsAtom} from '../atoms/messagesAtom';
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue} from "recoil";
 import {selectedChatAtom} from '../atoms/messagesAtom';
+import userAtom from '../atoms/userAtom';
+import { useSocket } from '../context/SocketContext';
 
 const ChatPage = () => {
-  const popToast = usePopToast();
+  //
   const [loadConversations, setLoadConversations] = useState(true);
-  const [conversations, setConversations] = useRecoilState(conversationsAtom);
-  const [selectedChat, setSelectedChat] = useRecoilState(selectedChatAtom);
   const [searchUserText, setSearchUserText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [conversations, setConversations] = useRecoilState(conversationsAtom);
+  const [selectedChat, setSelectedChat] = useRecoilState(selectedChatAtom);
+  const loggedInUser = useRecoilValue(userAtom);
+  const popToast = usePopToast();
+  const {socket, onlineUsers} = useSocket();
+
+
+  useEffect(() => {
+    socket?.on("messagesSeen", ({conversationId}) => {
+      setConversations(prev => {
+        const updated = prev.map(conversation => {
+          if(conversation._id === conversationId){
+            return {
+              ...conversation,
+              lastMessage: {
+                ...conversation.lastMessage,
+                seen : true,
+              },
+            };
+          }
+          return conversation;
+        });
+        return updated;
+      })
+    })
+  },[socket, setConversations]);
+
   useEffect(() => {
 
     const getConversations = async () => {
@@ -39,11 +66,58 @@ const ChatPage = () => {
     getConversations();
     },[popToast, setConversations])
 
+
+
+    //Searing users to send messages to them.
     const searchUser = async (e) => {
       e.preventDefault();
       setLoading(true);
+      console.log(searchUserText);
       try {
-        
+        const res = await fetch(`/api/users/getprofile/${searchUserText}`);
+        const foundUser = await res.json();
+
+        if(foundUser.error) {
+          popToast("Error", data.error, "error");
+          return; 
+        }
+        console.log(foundUser);
+        //We are searching ourselves.
+        if(foundUser._id === loggedInUser._id){
+          popToast("Error","Cannot send messages to yourself", "error");
+          return;
+        }
+
+        //User exist already in our chat history.
+        if(conversations.find(conv => conv.participants[0]._id === foundUser._id)){
+          setSelectedChat({
+            _id : conversations.find(conv => conv.participants[0]._id === foundUser._id)._id,
+            userId : foundUser._id,
+            username : foundUser.username,
+            userProfilePic : foundUser.profilePic, 
+          })
+          return;
+        }
+
+        //if user doesn't exist in our chat panel
+        const newConversation = {
+          new : true,
+          lastMessage : {
+            text: "",
+            sender: "",
+          },
+          _id : Date.now(),
+          participants : [
+            {
+              _id : foundUser._id,
+              username : foundUser.username,
+              profilePic : foundUser.profilePic
+            }
+          ]
+        }
+
+        setConversations((prev) => [...prev, newConversation]);
+
       } catch (error) {
         popToast("Error", error.message, "error");
       } finally{
@@ -59,7 +133,7 @@ const ChatPage = () => {
             <Text fontWeight={700} color={useColorModeValue("gray.600", "gray.400")}>Your Conversations</Text>
             <form action="" onSubmit={searchUser}>
                 <Flex alignItems={"center"} gap={2}>
-                    <Input placeholder='Search user' onChange={(e) => searchUserText(e.target.value)}/>
+                    <Input placeholder='Search user' onChange={(e) => setSearchUserText(e.target.value)}/>
                     <Button size={"md"} onClick={searchUser} isLoading={loading}>
                         <SearchIcon />
                     </Button>
@@ -81,7 +155,8 @@ const ChatPage = () => {
 
             {!loadConversations && 
              conversations.map((conversation) => (
-                <Conversation key={Conversation._id} conversation={conversation} />          
+                <Conversation key={conversation._id} conversation={conversation} 
+                isOnline={onlineUsers.includes(conversation.participants[0]._id)} />          
             ))}
             
             
