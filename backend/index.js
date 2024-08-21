@@ -6,10 +6,11 @@ const userRoutes = require('./routes/userRoutes');
 const postsRoutes = require('./routes/postsRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const cloudinary = require('cloudinary').v2;
+const {app, server} = require("./socket/socket");
 
 dotenv.config();
 connectDb();
-const server = express();
+// const app = express();
 const PORT = process.env.PORT || 3000;
 
 cloudinary.config({
@@ -26,6 +27,7 @@ server.use("/api/users", userRoutes);
 server.use("/api/posts", postsRoutes);
 server.use("/api/messages", messageRoutes);
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server started at http://localhost:${PORT} and listening on port ` + PORT);
 })
+
