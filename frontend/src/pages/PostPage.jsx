@@ -169,18 +169,6 @@ const PostPage = () => {
       />
       ))}
 
-      {/* <Comment 
-        comment="Looks really good"
-        createdAt="2d"
-        likes={100}
-        username="johnDoe"
-        userAvatar='https://bit.ly/dan-abramov'  
-      /> */}
-      
-      
-      
-
-
     </>
   )
 }
