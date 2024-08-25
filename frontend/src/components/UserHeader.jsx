@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Box, Flex, VStack, Avatar, Text, Link, Portal, Menu, MenuButton, MenuList, MenuItem, Button} from "@chakra-ui/react";
+import {Box, Flex, VStack, Avatar, Text, Link, Portal, Menu, MenuButton, MenuList, MenuItem, Button, useColorMode} from "@chakra-ui/react";
 import {BsInstagram} from "react-icons/bs";
 import {CgMoreO} from "react-icons/cg";
 import { useToast } from '@chakra-ui/react';
@@ -16,6 +16,7 @@ const UserHeader = ({user}) => {
     const currUser = useRecoilValue(userAtom); // logged in user
     const [following, setfollowing] = useState(user.followers.includes(currUser?._id));
     const [updating, setUpdating] = useState(false);
+    const {colorMode} = useColorMode();
     const toast = useToast();
     const popToast = usePopToast();
 
@@ -81,12 +82,12 @@ const UserHeader = ({user}) => {
     <VStack gap={4} alignItems={"start"}>
         <Flex justifyContent={"space-between"} w={"full"}>
             <Box>
-                <Text fontSize={"2xl"} fontWeight={"bold"}>
+                <Text fontSize={"2xl"} mb={3} fontWeight={"bold"}>
                     {user.name}
                 </Text>
                 <Flex gap={2} alignItems={"center"}>
-                    <Text fontSize={"sm"}>{user.username}</Text>
-                    <Text fontSize={"xs"} bg={"gray.dark"} color={"gray.light"} p={1} pr={2} pl={2} borderRadius={"full"}>
+                    <Text fontSize={"sm"} mt={2}>{user.username}</Text>
+                    <Text fontSize={"xs"} bg={ colorMode !== "dark" ? "lightBlue" : "gray.dark"} color={"gray.light"} mt={2} p={1} pr={2} pl={2} borderRadius={"full"}>
                     threads.net
                     </Text>
                 </Flex>
@@ -95,7 +96,7 @@ const UserHeader = ({user}) => {
                 {user.profilePic && (<Avatar
                     name={user.name}
                     src={user.profilePic}
-                    size={{base:"md", md: "xl"}}/>
+                    size={{base:"lg", md: "xl"}}/>
                 )} 
                 {!user.profilePic && (<Avatar
                     name={user.name}
@@ -105,10 +106,11 @@ const UserHeader = ({user}) => {
 
             </Box>
         </Flex>
-        <Text >{user.bio}</Text>
+        <Text letterSpacing={".7px"} fontSize={{base:"12px", md : "16px"}}>{user.bio}</Text>
         {currUser?._id === user._id && (
 				<Link as={RouterLink} to='/update'>
-					<Button size={"md"}>Update Profile</Button>
+					<Button p={4} size={{base : "xs", md : "md"}} bg={ colorMode !== "dark" ? "tomato" : "gray.dark"}
+                        color={"white"}>Update Profile</Button>
 				</Link>
 		)}
         {currUser?._id !== user._id && (
