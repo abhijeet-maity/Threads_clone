@@ -1,11 +1,13 @@
 const Conversation = require('../models/conversationModel');
 const Message = require('../models/messageModel');
+const cloudinary = require('cloudinary').v2;
 const { getReceiverSocketId, io } = require('../socket/socket');
 
 
 const sendMessage = async(req, res) => {
     try {
         const {recipientId, message} = req.body;
+        let { img } = req.body;
         const senderId = req.user._id;
 
         let conversation = await Conversation.findOne({
@@ -23,10 +25,16 @@ const sendMessage = async(req, res) => {
             await conversation.save();
         }
 
+        if(img) {
+            const res = await cloudinary.uploader.upload(img);
+            img = res.secure_url;
+        }
+
         const newMessage = new Message({
             conversationId: conversation._id,
             sender: senderId,
-            text: message
+            text: message,
+            img: img || "",
         })
 
         await Promise.all([
