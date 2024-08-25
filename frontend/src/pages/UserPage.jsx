@@ -8,10 +8,13 @@ import { Flex, Spinner } from "@chakra-ui/react";
 import Post from '../components/Post';
 import postsAtom from '../atoms/postsAtom';
 import { useRecoilState } from 'recoil';
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 
 const UserPage = () => {
 
+  const currUser = useRecoilValue(userAtom); // logged in user
   const[user, setUser] = useState();
   const [posts, setPosts] = useRecoilState(postsAtom);
   const {username} = useParams();
@@ -32,6 +35,13 @@ const UserPage = () => {
           popToast("Error", data.error,"error");
           return;
         }
+
+        //Not to display user Page if account is been frozen.
+        // if(data.isFrozen) {
+        //   setUser(null);
+        //   return;
+        // }
+
         setUser(data);
       } catch (e) {
         console.log(e);
@@ -42,6 +52,7 @@ const UserPage = () => {
     };
 
     const getUserPosts = async () => {
+      
       setFetchingUserPosts(true);
       try {
         const res = await fetch(`/api/posts/user/${username}`);
@@ -61,7 +72,7 @@ const UserPage = () => {
     getUser();
     getUserPosts();
   },[username, popToast, setPosts]);
-  console.log("posts is here ", posts);
+  // console.log("posts is here ", posts);
 
 
   if (!user && loading) {
@@ -72,7 +83,7 @@ const UserPage = () => {
 		);
 	}
 
-//lninh+
+
   if(!user && !loading){
     return <h1>User Not Found</h1>
   }
@@ -81,8 +92,10 @@ const UserPage = () => {
     <>
       <UserHeader user={user}/>
 
-      {!fetchingUserPosts && posts.length === 0 && <Flex flexDirection={"column"} textAlign={"center"} m={70}>
-        <h1>You have No Posts</h1><h2>Create your First Post By clicking on the create post button below</h2></Flex>}
+      {!fetchingUserPosts && posts.length === 0 && <Flex flexDirection={"column"} textAlign={"center"} m={70}>{
+        user._id === currUser._id ? (<h1>No Posts yet, Create your First Post by clicking on the "+" button below</h1>) : (<h1>User has no posts yet</h1>)
+        }
+        </Flex>}
       {fetchingUserPosts && (<Flex justifyContent={"center"} my={12}>
 				<Spinner size={"xl"} />
 			</Flex>)}
@@ -95,3 +108,5 @@ const UserPage = () => {
 }
 
 export default UserPage
+
+{/* <h1>You have No Posts</h1><h2>Create your First Post By clicking on the create post button below</h2> */}
