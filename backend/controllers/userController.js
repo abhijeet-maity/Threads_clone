@@ -334,6 +334,35 @@ const getUserFollowers = async (req, res) => {
 };
 
 
+const getUserFollowings = async (req, res) => {
+  const {query} = req.params;
+
+  try {
+    let user;
+
+    if (mongoose.Types.ObjectId.isValid(query)) {
+      //??get user profile based on userId entered except password and last updated fields.
+			user = await User.findOne({ _id: query }).select("-password").select("-updatedAt");
+		} else {
+			// query is username
+			user = await User.findOne({ username: query }).select("-password").select("-updatedAt");
+		}
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Assuming the followers are stored as an array of ObjectIds in a `followers` field in the User model
+    const following = await User.find({ _id: { $in: user.following } }).select("-password -updatedAt -createdAt");
+
+    res.status(200).json(following);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
 module.exports = {
   signupUser,
   loginUser,
@@ -344,5 +373,6 @@ module.exports = {
   getSuggestedUsers,
   freeze,
   getMultipleUsersProfiles,
-  getUserFollowers
+  getUserFollowers,
+  getUserFollowings
 };
