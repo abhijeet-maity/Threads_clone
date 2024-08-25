@@ -66,6 +66,11 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
+    if(user.isFrozen){
+      user.isFrozen = false;
+      await user.save();
+    }
+
     generateTokenAndSetCookie(user._id, res);
 
     //??This response is send back to the user if the login is successful
@@ -195,6 +200,7 @@ const updateUser = async (req, res) => {
   }
 };
 
+//??get user profile based on username entered except password and last updated fields.
 const getUserProfile = async (req, res) => {
 
   const {query} = req.params;
@@ -220,16 +226,111 @@ const getUserProfile = async (req, res) => {
 		console.log("Error in getUserProfile: ", err.message);
 	}
 
-//   try{
-//     //??get user profile based on username entered except password and last updated fields.
-//     const user = await User.findOne({username}).select("-password").select("-updatedAt");
-//     if(!user) return res.status(400).json({error: "User not found"});
-//     res.status(200).json(user);
+};
 
-//   } catch(error) {
-//     res.status(500).json({ error: error.message });
-//     console.log("Error in get profile : ", error.message);
-//   }
+
+const getSuggestedUsers = async (req, res) => {
+  try {
+    //exclude loggedIn user and the users the loggedIn user follows from the suggested list of users.
+    const userId = req.user._id;
+    const userFollowedByMe = await User.findById(userId).select("following");
+    const users = await User.aggregate([
+      {
+        $match: {
+          _id: {$ne : userId},
+        }
+      },
+      {
+        $sample : {
+          size : 10,
+        }
+      }
+    ]);
+    // console.log(userFollowedByMe);
+    // console.log("users",users);
+
+    const filteredUsers = users.filter(user => !userFollowedByMe.following.includes(user._id));
+    const suggestedOnes = filteredUsers.slice(0,4);
+    suggestedOnes.forEach(user => user.password = null);      
+    res.status(200).json(suggestedOnes);
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const freeze = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if(!user) {
+      res.status(404).json({ error: "User not found." });
+    }
+
+    user.isFrozen = true;
+    await user.save();
+
+    res.status(200).json({success: true});
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const getMultipleUsersProfiles = async (req, res) => {
+  const { query } = req.params;
+  // query is either userId or username
+  
+  
+  try {
+    let users;
+
+    // query is userId
+    if (mongoose.Types.ObjectId.isValid(query)) {
+      // Get user profile based on userId entered except password and last updated fields.
+      users = await User.find({ _id: query }).select("-password -updatedAt");
+    } else {
+      // query is username, find multiple users matching the username
+      const regex = new RegExp(query, 'i');
+      users = await User.find({ username: regex }).select("-password -updatedAt");
+    }
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+    console.log("Error in getUserProfiles: ", err.message);
+  }
+};
+
+const getUserFollowers = async (req, res) => {
+  const {query} = req.params;
+
+  try {
+    let user;
+
+    if (mongoose.Types.ObjectId.isValid(query)) {
+      //??get user profile based on userId entered except password and last updated fields.
+			user = await User.findOne({ _id: query }).select("-password").select("-updatedAt");
+		} else {
+			// query is username
+			user = await User.findOne({ username: query }).select("-password").select("-updatedAt");
+		}
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Assuming the followers are stored as an array of ObjectIds in a `followers` field in the User model
+    const followers = await User.find({ _id: { $in: user.followers } }).select("-password -updatedAt -createdAt");
+
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 
@@ -240,4 +341,8 @@ module.exports = {
   followUnfollowUser,
   updateUser,
   getUserProfile,
+  getSuggestedUsers,
+  freeze,
+  getMultipleUsersProfiles,
+  getUserFollowers
 };
