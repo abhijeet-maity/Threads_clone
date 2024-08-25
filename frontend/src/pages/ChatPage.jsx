@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react'
-import { SearchIcon } from '@chakra-ui/icons'
-import { Box, Flex, Input, useColorModeValue, Button, Text, SkeletonCircle, Skeleton } from '@chakra-ui/react'
-import Conversation from '../components/Conversation'
+import React, {useEffect, useState} from 'react';
+import { SearchIcon } from '@chakra-ui/icons';
+import { Box, Flex, Input, useColorModeValue, Button, Text, SkeletonCircle, Skeleton } from '@chakra-ui/react';
+import Conversation from '../components/Conversation';
 import { GiConversation } from 'react-icons/gi';
 import MessageContainer from '../components/MessageContainer';
 import usePopToast from "../customHooks/usePopToast";
@@ -169,7 +169,6 @@ const ChatPage = () => {
         )}
         {selectedChat._id && <MessageContainer/>}
         
-        {/* <Flex flex={70}>Message container</Flex> */}
       </Flex>
     </Box>
   )
