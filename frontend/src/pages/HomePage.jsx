@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Flex, Spinner} from "@chakra-ui/react";
+import { Flex, Spinner, Box} from "@chakra-ui/react";
 // import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import usePopToast from '../customHooks/usePopToast';
 import Post from "../components/Post";
 import postsAtom from "../atoms/postsAtom";
 import { useRecoilState } from "recoil";
+import FollowMoreUsers from '../components/FollowMoreUsers';
 
 
 
@@ -47,7 +48,8 @@ const HomePage = () => {
 //
   return (
 
-    <>
+    <Flex gap={10} alignItems={"flex-start"}>
+      <Box flex={70}>
       {!loading && posts.length === 0 && <h1>Follow some users to see the feed</h1>}
       {loading && (
 					<Flex justify='center'>
@@ -58,13 +60,13 @@ const HomePage = () => {
       {Array.isArray(posts) && posts.map((post) => (
         <Post key={post._id} post={post} postedBy={post.postedBy} />
       ))}
+      </Box>
+      <Box flex={30} display={{base:"none", md:"block"}}>
+        <FollowMoreUsers />
+      </Box>
 
-    </>
-    // <Link to={"/markzuckerberg"}>
-    //   <Flex w={"full"} justifyContent={"center"}>
-    //     <Button mx={"auto"}>Visit Profile Page</Button>
-    //   </Flex>
-    // </Link>
+    </Flex>
+    
   );
 };
 
