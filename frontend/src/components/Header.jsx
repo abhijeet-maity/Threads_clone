@@ -8,6 +8,8 @@ import { RxAvatar } from "react-icons/rx";
 import LogoutButton from './LogoutButton';
 import authScreenAtom from '../atoms/authAtom';
 import { BsFillChatQuoteFill } from 'react-icons/bs';
+import {MdOutlineSettings} from 'react-icons/md';
+import { SearchIcon } from '@chakra-ui/icons';
 
 
 const Header = () => {
@@ -19,7 +21,7 @@ const Header = () => {
   console.log("Image source:", colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg");
   
   return (
-    <Flex justifyContent={"space-between"} ml={2} mt={8} mb="12">
+    <Flex justifyContent={"space-between"} ml={2} mt={8} mb={{base:"6", md:"12"}}>
       {currUser && (
 				<Link to='/'>
 					<AiFillHome size={26} />
@@ -52,11 +54,17 @@ const Header = () => {
         
       {currUser ? (
         <Flex alignItems={"center"} gap={4}>
+        <Link  to={`/searchUser`}>
+					<SearchIcon size={30} />
+				</Link>
         <Link  to={currUser.username}>
 					<RxAvatar size={26} />
 				</Link>
         <Link  to={`/chat`}>
 					<BsFillChatQuoteFill size={25} />
+				</Link>
+        <Link  to={`/settings`}>
+					<MdOutlineSettings size={25} />
 				</Link>
         <LogoutButton/>
         </Flex> 
