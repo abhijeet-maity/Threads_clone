@@ -1,5 +1,5 @@
 const express = require('express');
-const {signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, getUserProfile, getSuggestedUsers, freeze, getMultipleUsersProfiles, getUserFollowers} = require('../controllers/userController');
+const {signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, getUserProfile, getSuggestedUsers, freeze, getMultipleUsersProfiles, getUserFollowers, getUserFollowings} = require('../controllers/userController');
 const protectRoute = require('../middlewares/protectRoute');
 const router = express.Router();
 
@@ -7,6 +7,7 @@ const router = express.Router();
 router.get('/getprofile/:query',getUserProfile);
 router.get('/getMultipleUsersProfiles/:query',getMultipleUsersProfiles);
 router.get('/getfollowers/:query',getUserFollowers);
+router.get('/getfollowing/:query',getUserFollowings);
 router.get('/suggestedusers',protectRoute, getSuggestedUsers);
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
