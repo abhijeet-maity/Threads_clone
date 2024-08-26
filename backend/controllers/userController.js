@@ -370,6 +370,33 @@ export const getUserFollowings = async (req, res) => {
   }
 };
 
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+  
+    if(!userId) {
+      return res.status(400).json({ error: "User Id is required" });
+    }
+    // Remove the Current user from the followers list of users they followed.
+    await User.updateMany(
+      { following: userId },
+      { $pull: { following: userId } }
+    );
+    // Remove the Current user from the following list of users who followed them.
+    await User.updateMany(
+      { followers: userId },
+      { $pull: { followers: userId } }
+    );
+    const user = await User.findByIdAndDelete(userId);
+    if(!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json({success: true});
+  } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+  
+};
 
 // module.exports = {
 //   signupUser,
