@@ -89,6 +89,30 @@ const SettingsPage = () => {
           }
     }
 
+    const deleteAccount = async () => {
+      if(!window.confirm('Are you sure you want to delete your account?')) {
+        return;
+      }
+      try {
+        const res = await fetch('api/users/delete',{
+          method: 'DELETE',
+          headers: {'Content-Type': 'application/json'},
+        })
+        const data = await res.json();
+
+        if(data.error) {
+          return popToast("Error", data.error, "error");
+        }
+
+        if(data.success) {
+          await logout();
+          popToast("Success", "Your Account has been Deleted", "success");
+        }
+      } catch (error) {
+        popToast("Error", error.message, "error");
+      }
+    }
+
     useEffect(() => {
       displayFollowers();
       displayFollowing();
@@ -132,6 +156,17 @@ const SettingsPage = () => {
         loadingUsers={loadingFollowing}
         list={myFollowing}
         btntext={"Following"}/>
+
+        <hr style={{marginTop: "14px", color:"gray", height:"10px"}}/>
+        <Flex alignItems={"flex-end"} p={2} justifyContent={"space-between"} gap={4}>
+            <Box>
+                <Text my={1} fontSize={{base:"sm",md:"md",lg:"lg"}} color={"red"} letterSpacing={.9} fontWeight={"bold"}>Delete Account</Text>
+                <Text my={1} mt={1} fontSize={{base:"xs",md:"sm",lg:"md"}} letterSpacing={.6}>You can delete your account, but once deleted you will never be able to login with this account.</Text>
+            </Box>
+            <Button size={{base:"md",md:"md"}} p={{base:"4", md:"5"}} pl={9} pr={9} colorScheme='red' onClick={deleteAccount}>Delete</Button>
+        </Flex>
+
+
     </Flex>
   )
 }
