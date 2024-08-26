@@ -107,6 +107,5 @@ const UserPage = () => {
   )
 }
 
-export default UserPage
+export default UserPage;
 
-{/* <h1>You have No Posts</h1><h2>Create your First Post By clicking on the create post button below</h2> */}
