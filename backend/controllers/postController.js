@@ -1,8 +1,12 @@
-const User = require("../models/userModel");
-const Post = require("../models/postModel");
-const cloudinary = require('cloudinary').v2;
+// const User = require("../models/userModel");
+// const Post = require("../models/postModel");
+// const cloudinary = require('cloudinary').v2;
 
-const createPost = async (req, res) => {
+import User from '../models/userModel.js';
+import Post from '../models/postModel.js';
+import { v2 as cloudinary } from 'cloudinary';
+
+export const createPost = async (req, res) => {
     try {
 		// The postedBy, text, and img fields are extracted from the request body which are sent through frontend.
         const { postedBy, text } = req.body;
@@ -49,7 +53,7 @@ const createPost = async (req, res) => {
 };
 
 // Finding post of users follwing from post collection.
-const getPost = async (req, res) => {
+export const getPost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
 
@@ -63,7 +67,7 @@ const getPost = async (req, res) => {
 	}
 };
 
-const deletePost = async (req, res) => {
+export const deletePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
 		if (!post) {
@@ -88,7 +92,7 @@ const deletePost = async (req, res) => {
 	}
 };
 
-const likeUnlikePost = async (req, res) => {
+export const likeUnlikePost = async (req, res) => {
 
 	try {
         //get post Id and rename as postId
@@ -118,7 +122,7 @@ const likeUnlikePost = async (req, res) => {
 	}
 }; 
 
-const replyOnPost = async (req, res) => {
+export const replyOnPost = async (req, res) => {
 	try {
 		const { text } = req.body;
 		const postId = req.params.id;// getting post id from params
@@ -147,7 +151,7 @@ const replyOnPost = async (req, res) => {
 };
 //
 
-const getFeedPosts = async (req, res) => {
+export const getFeedPosts = async (req, res) => {
 	
 	try {
 		const userId = req.user._id;
@@ -173,7 +177,7 @@ const getFeedPosts = async (req, res) => {
 	}
 };
 
-const getUserPosts = async (req, res) => {
+export const getUserPosts = async (req, res) => {
 	const {username} = req.params;
 	try {
 		const user = await User.findOne({ username});
@@ -191,5 +195,5 @@ const getUserPosts = async (req, res) => {
 
 //
 
-module.exports = {createPost, getPost, deletePost, likeUnlikePost, replyOnPost, getFeedPosts, getUserPosts};
+// module.exports = {createPost, getPost, deletePost, likeUnlikePost, replyOnPost, getFeedPosts, getUserPosts};
 

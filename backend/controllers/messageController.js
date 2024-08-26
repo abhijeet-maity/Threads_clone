@@ -1,10 +1,16 @@
-const Conversation = require('../models/conversationModel');
-const Message = require('../models/messageModel');
-const cloudinary = require('cloudinary').v2;
-const { getReceiverSocketId, io } = require('../socket/socket');
+// const Conversation = require('../models/conversationModel');
+// const Message = require('../models/messageModel');
+// const cloudinary = require('cloudinary').v2;
+// const { getReceiverSocketId, io } = require('../socket/socket');
 
 
-const sendMessage = async(req, res) => {
+import Conversation from '../models/conversationModel.js';
+import Message from '../models/messageModel.js';
+import { v2 as cloudinary } from 'cloudinary';
+import { getReceiverSocketId, io } from '../socket/socket.js';
+
+
+export const sendMessage = async(req, res) => {
     try {
         const {recipientId, message} = req.body;
         let { img } = req.body;
@@ -62,7 +68,7 @@ const sendMessage = async(req, res) => {
     }
 }
 
-const getMessages = async (req, res) => {
+export const getMessages = async (req, res) => {
     const { otherUserId } = req.params;
     const userId = req.user._id;
     
@@ -89,7 +95,7 @@ const getMessages = async (req, res) => {
     }
 };
 
-const getConversations = async (req, res) => {
+export const getConversations = async (req, res) => {
     const userId = req.user._id;
     try {
         const conversations = await Conversation.find({ participants: userId}).populate({
@@ -111,7 +117,7 @@ const getConversations = async (req, res) => {
     }
 };
 
-module.exports = {sendMessage, getMessages, getConversations};
+// module.exports = {sendMessage, getMessages, getConversations};
 
 
 

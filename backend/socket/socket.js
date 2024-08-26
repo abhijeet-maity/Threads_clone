@@ -1,9 +1,15 @@
 
-const {Server} = require('socket.io');
-const http = require('http');
-const express = require('express');
-const Message = require('../models/messageModel');
-const Conversation = require('../models/conversationModel');
+// const {Server} = require('socket.io');
+// const http = require('http');
+// const express = require('express');
+// const Message = require('../models/messageModel');
+// const Conversation = require('../models/conversationModel');
+
+import { Server } from 'socket.io';
+import http from 'http';
+import express from 'express';
+import Message from '../models/messageModel.js';
+import Conversation from '../models/conversationModel.js';
 
 const server = express();   //server
 const app = http.createServer(server); //server   -  server
@@ -51,6 +57,6 @@ io.on('connection', (socket) => {
     });
 });
 
-module.exports = {io, app, server, getReceiverSocketId};
-
+export {io, app, server, getReceiverSocketId};
+// module.exports = {io, app, server, getReceiverSocketId};
 

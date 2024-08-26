@@ -1,12 +1,13 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const connectDb = require('./db/connectDb');
-const cookieParser = require('cookie-parser');
-const userRoutes = require('./routes/userRoutes');
-const postsRoutes = require('./routes/postsRoutes');
-const messageRoutes = require('./routes/messageRoutes');
-const cloudinary = require('cloudinary').v2;
-const {app, server} = require("./socket/socket");
+
+import express from 'express';
+import dotenv from 'dotenv';
+import connectDb from './db/connectDb.js';
+import cookieParser from 'cookie-parser';
+import userRoutes from './routes/userRoutes.js';
+import postsRoutes from './routes/postsRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
+import { v2 as cloudinary } from 'cloudinary';
+import { app, server } from "./socket/socket.js";
 
 dotenv.config();
 connectDb();

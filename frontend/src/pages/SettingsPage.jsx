@@ -101,7 +101,7 @@ const SettingsPage = () => {
                 <Text my={1} fontSize={{base:"sm",md:"md",lg:"lg"}} fontWeight={"bold"}>Freeze Your Account</Text>
                 <Text my={1} mt={1} fontSize={{base:"xs",md:"sm",lg:"md"}} letterSpacing={.6}>You can unfreeze your account anytime by simply logging in.</Text>
             </Box>
-            <Button size={{base:"xs",md:"sm"}} p={{base:"4", md:"5"}} colorScheme='red' onClick={freezeMyAccount}>Freeze</Button>
+            <Button size={{base:"sm",md:"md"}} p={{base:"4", md:"5"}} pl={"9"} pr={"9"} colorScheme='red' onClick={freezeMyAccount}>Freeze</Button>
         </Flex>
 
         <hr style={{marginTop: "14px", color:"gray", height:"10px"}}/>
@@ -110,7 +110,7 @@ const SettingsPage = () => {
                 <Text my={1} fontSize={{base:"sm",md:"md",lg:"lg"}} fontWeight={"bold"}>Switch Mode</Text>
                 <Text my={1} mt={1} fontSize={{base:"xs",md:"sm",lg:"md"}} letterSpacing={.6}>You can toggle between Light mode & Dark mode.</Text>
             </Box>
-            <Button size={{base:"xs",md:"sm"}} p={{base:"4", md:"5"}} colorScheme='blue' onClick={toggleColorMode}>{colorMode === "dark" ? "Light" : "Dark"}</Button>
+            <Button size={{base:"sm",md:"md"}} p={{base:"4", md:"5"}} pl={"9"} pr={"9"} colorScheme='blue' onClick={toggleColorMode}>{colorMode === "dark" ? "Light" : "Dark"}</Button>
         </Flex>
 
         {/* User Followers Section */}
@@ -126,7 +126,7 @@ const SettingsPage = () => {
         {/* User Following section */}
         <hr style={{marginTop: "14px", color:"gray", height:"10px"}}/>
         <DisplayUserList title={"People you followed"} 
-        text={"List of people whom you have followed"}
+        text={"List of people whom you have followed."}
         display={getFollowing}
         setUserstoToggle={setGetFollowing}
         loadingUsers={loadingFollowing}

@@ -1,11 +1,19 @@
-const User = require("../models/userModel");
-const Post = require("../models/postModel");
-const bcrypt = require("bcryptjs");
-const generateTokenAndSetCookie = require("../utils/generateTokenAndSetCookie");
-const cloudinary = require('cloudinary').v2;
-const mongoose = require('mongoose');
+// const User = require("../models/userModel");
+// const Post = require("../models/postModel");
+// const bcrypt = require("bcryptjs");
+// const generateTokenAndSetCookie = require("../utils/generateTokenAndSetCookie");
+// const cloudinary = require('cloudinary').v2;
+// const mongoose = require('mongoose');
 
-const signupUser = async (req, res) => {
+import User from '../models/userModel.js';
+import Post from '../models/postModel.js';
+import bcrypt from 'bcryptjs';
+import generateTokenAndSetCookie from '../utils/generateTokenAndSetCookie.js';
+import { v2 as cloudinary } from 'cloudinary';
+import mongoose from 'mongoose';
+
+
+export const signupUser = async (req, res) => {
   try {
     const { name, email, username, password } = req.body;
     console.log(name, email, username, password);
@@ -50,7 +58,7 @@ const signupUser = async (req, res) => {
   }
 };
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     //user is searched from db by current username
@@ -89,7 +97,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 1 });
     res.status(200).json({ message: "User logged out successfully" });
@@ -99,7 +107,7 @@ const logoutUser = async (req, res) => {
   }
 };
 
-const followUnfollowUser = async (req, res) => {
+export const followUnfollowUser = async (req, res) => {
   try {
     const { id } = req.params;
     const userToModify = await User.findById(id);
@@ -139,7 +147,7 @@ const followUnfollowUser = async (req, res) => {
 };
 
 //This updateUser function is not working fine it needs a look
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
 
   const { name, email, username, password, bio } = req.body;
   let { profilePic} = req.body;
@@ -201,7 +209,7 @@ const updateUser = async (req, res) => {
 };
 
 //??get user profile based on username entered except password and last updated fields.
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
 
   const {query} = req.params;
   //query is either username or useId
@@ -229,7 +237,7 @@ const getUserProfile = async (req, res) => {
 };
 
 
-const getSuggestedUsers = async (req, res) => {
+export const getSuggestedUsers = async (req, res) => {
   try {
     //exclude loggedIn user and the users the loggedIn user follows from the suggested list of users.
     const userId = req.user._id;
@@ -259,7 +267,7 @@ const getSuggestedUsers = async (req, res) => {
   }
 }
 
-const freeze = async (req, res) => {
+export const freeze = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if(!user) {
@@ -276,7 +284,7 @@ const freeze = async (req, res) => {
   }
 }
 
-const getMultipleUsersProfiles = async (req, res) => {
+export const getMultipleUsersProfiles = async (req, res) => {
   const { query } = req.params;
   // query is either userId or username
   
@@ -305,7 +313,7 @@ const getMultipleUsersProfiles = async (req, res) => {
   }
 };
 
-const getUserFollowers = async (req, res) => {
+export const getUserFollowers = async (req, res) => {
   const {query} = req.params;
 
   try {
@@ -334,7 +342,7 @@ const getUserFollowers = async (req, res) => {
 };
 
 
-const getUserFollowings = async (req, res) => {
+export const getUserFollowings = async (req, res) => {
   const {query} = req.params;
 
   try {
@@ -363,16 +371,16 @@ const getUserFollowings = async (req, res) => {
 };
 
 
-module.exports = {
-  signupUser,
-  loginUser,
-  logoutUser,
-  followUnfollowUser,
-  updateUser,
-  getUserProfile,
-  getSuggestedUsers,
-  freeze,
-  getMultipleUsersProfiles,
-  getUserFollowers,
-  getUserFollowings
-};
+// module.exports = {
+//   signupUser,
+//   loginUser,
+//   logoutUser,
+//   followUnfollowUser,
+//   updateUser,
+//   getUserProfile,
+//   getSuggestedUsers,
+//   freeze,
+//   getMultipleUsersProfiles,
+//   getUserFollowers,
+//   getUserFollowings
+// };

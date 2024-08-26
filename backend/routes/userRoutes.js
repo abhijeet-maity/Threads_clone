@@ -1,6 +1,24 @@
-const express = require('express');
-const {signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, getUserProfile, getSuggestedUsers, freeze, getMultipleUsersProfiles, getUserFollowers, getUserFollowings} = require('../controllers/userController');
-const protectRoute = require('../middlewares/protectRoute');
+// const express = require('express');
+// const {signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, getUserProfile, getSuggestedUsers, freeze, getMultipleUsersProfiles, getUserFollowers, getUserFollowings} = require('../controllers/userController');
+// const protectRoute = require('../middlewares/protectRoute');
+
+
+import express from 'express';
+import {
+    signupUser,
+    loginUser,
+    logoutUser,
+    followUnfollowUser,
+    updateUser,
+    getUserProfile,
+    getSuggestedUsers,
+    freeze,
+    getMultipleUsersProfiles,
+    getUserFollowers,
+    getUserFollowings
+} from '../controllers/userController.js';
+import protectRoute from '../middlewares/protectRoute.js';
+
 const router = express.Router();
 
 
@@ -16,5 +34,6 @@ router.post('/follow/:id', protectRoute, followUnfollowUser);
 router.put('/update/:id',protectRoute, updateUser);
 router.put('/freeze',protectRoute, freeze);
 
+export default router;
 
-module.exports = router;
+// module.exports = router;
