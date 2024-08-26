@@ -15,7 +15,8 @@ import {
     freeze,
     getMultipleUsersProfiles,
     getUserFollowers,
-    getUserFollowings
+    getUserFollowings,
+    deleteUser
 } from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -33,6 +34,7 @@ router.post('/logout', logoutUser);
 router.post('/follow/:id', protectRoute, followUnfollowUser);
 router.put('/update/:id',protectRoute, updateUser);
 router.put('/freeze',protectRoute, freeze);
+router.delete('/delete',protectRoute, deleteUser);
 
 export default router;
 
