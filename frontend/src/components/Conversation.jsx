@@ -1,4 +1,4 @@
-import { Avatar, AvatarBadge, Flex, Image, Stack, Text, Box, useColorModeValue, WrapItem } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Flex, Image, Stack, Text, Box, useColorModeValue, WrapItem, useColorMode } from '@chakra-ui/react'
 import React from 'react'
 import {BsCheck2All} from "react-icons/bs";
 import { BsFillImageFill } from "react-icons/bs";
@@ -12,6 +12,7 @@ const Conversation = ({conversation, isOnline}) => {
   const lastMessage = conversation.lastMessage;
   const loggedInUser = useRecoilValue(userAtom)
   const [selectedChat, setSelectedChat] = useRecoilState(selectedChatAtom);
+  const colorMode = useColorMode();
 
 
   console.log("selectedChat", selectedChat);
@@ -27,7 +28,7 @@ const Conversation = ({conversation, isOnline}) => {
       username : chatPartner.username,
       new : conversation.new,
     })} borderRadius={"md"}
-    bg={selectedChat?._id === conversation._id ? useColorModeValue("gray.600","gray.dark") : ""}>
+    bg={selectedChat?._id === conversation._id ? (colorMode === "light" ? "gray.400" : "gray.dark") : ""}>
       <WrapItem>
         <Avatar size={{base: "xs", sm: "sm", md: "md"}} src={chatPartner?.profilePic}>
             {isOnline ? <AvatarBadge boxSize={"0.8em"} bg={"green.500"}/> : ""}
@@ -39,14 +40,14 @@ const Conversation = ({conversation, isOnline}) => {
         <Text fontSize="12" display={"flex"} alignItems={"center"}>
             {chatPartner?.username} <Image src='/verified.png' w={4} h={4} ml={1}/>
         </Text>
-        <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
+        <Box fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
             {loggedInUser._id === lastMessage.sender ? (
-              <Box color={lastMessage.seen ? "blue.400" : ""}>
+              <Text color={lastMessage.seen ? "blue.400" : ""}>
                 <BsCheck2All size={15}/>
-              </Box>
+              </Text>
             ) : ""}
             {lastMessage.text.length > 20 ? lastMessage.text.substring(0, 18) + "..." : lastMessage.text || <BsFillImageFill size={18}/>}
-        </Text>
+        </Box>
       </Stack>
 
     </Flex>
