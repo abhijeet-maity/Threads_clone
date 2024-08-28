@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState} from 'react';
+import { useState, lazy, Suspense} from 'react';
 import {Flex, Input, Button, SkeletonCircle, Box, Skeleton,} from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import userAtom from '../atoms/userAtom';
@@ -72,7 +72,7 @@ const SearchPage = () => {
         </Flex> 
         ))}
 
-         {!loading && foundUsers.map((user) => <SearchedUser key={user._id} user={user}/>)} 
+        {!loading && foundUsers.map((user) => <SearchedUser key={user._id} user={user}/>)} 
         
         </Flex>
 

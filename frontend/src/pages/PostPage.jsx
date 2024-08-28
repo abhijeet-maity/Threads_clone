@@ -1,25 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Flex, Avatar, Text, Image, Box, Divider, Button, Spinner} from '@chakra-ui/react';
-// import { BsThreeDots } from 'react-icons/bs';
 import { DeleteIcon } from "@chakra-ui/icons";
-import Actions from '../components/Actions';
-import Comment from '../components/Comment';
 import usePopToast from "../customHooks/usePopToast";
 import { useNavigate, useParams } from 'react-router-dom';
 import {formatDistanceToNow} from "date-fns";
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
-import { color } from 'framer-motion';
 import postsAtom from '../atoms/postsAtom';
 
-
-
+// Lazy loaded components
+const Actions = lazy(() => import('../components/Actions'));
+const Comment = lazy(() => import('../components/Comment'));
 
 const PostPage = () => {
 
-  // const [liked, setLiked] = useState(false);
   const popToast = usePopToast();
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const {username} = useParams();
@@ -114,8 +109,8 @@ const PostPage = () => {
   return (
     <>
       <Flex>
+
           <Flex w={"full"} gap={3} alignItems={"center"}>
-            {/* src='/zuck-avatar.png' */}
             <Avatar src={user.profilePic} size={"md"} name="Mark Zuckerberg"/>
             <Flex>
               <Text fontSize={"sm"} fontWeight={"bold"} >{user.username}</Text>
@@ -139,12 +134,11 @@ const PostPage = () => {
         </Box>
       )}
 
-      
-
       <Flex gap={3} my={3}>
-        <Actions post={currentPost}/>
+        <Suspense fallback={<Spinner size="lg" />}>
+          <Actions post={currentPost} />
+        </Suspense>
       </Flex>
-
       
       <Divider my={4}/>
 
@@ -161,13 +155,15 @@ const PostPage = () => {
       <Divider my={4}/>
       <Text fontSize={"xs"} color={"gray.light"}>You are reading below comments on this post</Text>
 
-      {currentPost.replies.map(reply => (
-        <Comment 
-        key={reply._id}
-        reply={reply}
-        lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
-      />
-      ))}
+      <Suspense fallback={<Spinner size="lg" />}>
+        {currentPost.replies.map(reply => (
+          <Comment
+            key={reply._id}
+            reply={reply}
+            lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
+          />
+        ))}
+      </Suspense>
 
     </>
   )

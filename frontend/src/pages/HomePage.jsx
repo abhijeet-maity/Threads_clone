@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { Flex, Spinner, Box} from "@chakra-ui/react";
-// import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import usePopToast from '../customHooks/usePopToast';
-import Post from "../components/Post";
 import postsAtom from "../atoms/postsAtom";
 import { useRecoilState } from "recoil";
-import FollowMoreUsers from '../components/FollowMoreUsers';
 
 
+// Lazy load the Post and FollowMoreUsers components
+const Post = lazy(() => import("../components/Post"));
+const FollowMoreUsers = lazy(() => import('../components/FollowMoreUsers'));
 
 const HomePage = () => {
   const popToast = usePopToast();
   const [posts, setPosts] = useRecoilState(postsAtom);
-  // const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,7 +44,6 @@ const HomePage = () => {
     getFeedPosts();
   }, [popToast,setPosts])
 
-//
   return (
 
     <Flex gap={10} alignItems={"flex-start"}>
@@ -56,13 +54,16 @@ const HomePage = () => {
 						<Spinner size='xl' />
 					</Flex>
 			)}
-      
+      <Suspense fallback={<Spinner size='xl' />}>
       {Array.isArray(posts) && posts.map((post) => (
         <Post key={post._id} post={post} postedBy={post.postedBy} />
       ))}
+      </Suspense>
       </Box>
       <Box flex={30} display={{base:"none", md:"block"}}>
+      <Suspense fallback={<Spinner size='lg' />}>
         <FollowMoreUsers />
+      </Suspense>
       </Box>
 
     </Flex>

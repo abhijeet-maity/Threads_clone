@@ -1,11 +1,13 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { Text, Button, Flex, Box, useColorMode} from '@chakra-ui/react';
+import { useState, useEffect, lazy, Suspense} from 'react';
+import { Text, Button, Flex, Box, useColorMode, Spinner} from '@chakra-ui/react';
 import usePopToast from '../customHooks/usePopToast';
 import useLogout from "../customHooks/useLogout";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
-import DisplayUserList from '../components/DisplayUserList';
+
+//Lazy Loaded components
+const DisplayUserList = lazy(() => import('./DisplayUserList'));
 
 const SettingsPage = () => {
     const [getFollowers, setGetFollowers] = useState(false);
@@ -139,16 +141,20 @@ const SettingsPage = () => {
 
         {/* User Followers Section */}
         <hr style={{marginTop: "14px", color:"gray", height:"10px"}}/>
+        <Suspense fallback={<Spinner size="lg" />}>
         <DisplayUserList title={"Your Followers"} 
         text={"See the people who followed you."}
         display={getFollowers}
         setUserstoToggle={setGetFollowers}
         loadingUsers={loadingFollowers}
         list={myFollowers}
-        btntext={"Followers"}/> 
+        btntext={"Followers"}/>
+        </Suspense>
+
 
         {/* User Following section */}
         <hr style={{marginTop: "14px", color:"gray", height:"10px"}}/>
+        <Suspense fallback={<Spinner size="lg" />}>
         <DisplayUserList title={"People you followed"} 
         text={"List of people whom you have followed."}
         display={getFollowing}
@@ -156,6 +162,7 @@ const SettingsPage = () => {
         loadingUsers={loadingFollowing}
         list={myFollowing}
         btntext={"Following"}/>
+        </Suspense>
 
         <hr style={{marginTop: "14px", color:"gray", height:"10px"}}/>
         <Flex alignItems={"flex-end"} p={2} justifyContent={"space-between"} gap={4}>

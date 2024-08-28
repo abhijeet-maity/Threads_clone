@@ -1,16 +1,17 @@
 import React from 'react';
-import UserHeader from '../components/UserHeader';
 import UserPost from '../components/UserPost';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import usePopToast from '../customHooks/usePopToast';
 import { Flex, Spinner } from "@chakra-ui/react";
-import Post from '../components/Post';
 import postsAtom from '../atoms/postsAtom';
 import { useRecoilState } from 'recoil';
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 
+// Lazy load the components
+const UserHeader = lazy(() => import('../components/UserHeader'));
+const Post = lazy(() => import('../components/Post'));
 
 const UserPage = () => {
 
@@ -90,7 +91,9 @@ const UserPage = () => {
 
   return (
     <>
-      <UserHeader user={user}/>
+      <Suspense fallback={<Spinner size="xl" />}>
+        <UserHeader user={user} />
+      </Suspense>
 
       {!fetchingUserPosts && posts.length === 0 && <Flex flexDirection={"column"} textAlign={"center"} m={70}>{
         user._id === currUser._id ? (<h1>No Posts yet, Create your First Post by clicking on the "+" button below</h1>) : (<h1>User has no posts yet</h1>)
@@ -100,9 +103,11 @@ const UserPage = () => {
 				<Spinner size={"xl"} />
 			</Flex>)}
 
-      {Array.isArray(posts) && posts.map((post) => (
-        <Post key={post._id} post={post} postedBy={post.postedBy} />
-      ))}
+      <Suspense fallback={<Spinner size="xl" />}>
+        {Array.isArray(posts) && posts.map((post) => (
+          <Post key={post._id} post={post} postedBy={post.postedBy} />
+        ))}
+      </Suspense>
     </>
   )
 }

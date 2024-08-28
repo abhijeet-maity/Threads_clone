@@ -1,20 +1,24 @@
 
-import { Box, Button } from "@chakra-ui/react";
-import { Container } from "@chakra-ui/react";
+import { Box, Container} from "@chakra-ui/react";
 import {Routes, Route, Navigate, useLocation} from 'react-router-dom';
-import Header from "./components/Header";
-import UserPage from "./pages/UserPage";
-import PostPage from "./pages/PostPage";
-import HomePage from "./pages/HomePage";
-import AuthPage from "./pages/AuthPage";
 import userAtom from "./atoms/userAtom";
 import { useRecoilValue } from "recoil";
+import { Suspense, lazy } from 'react';
+import Header from "./components/Header";
+import "./App.css";
 import LogoutButton from "./components/LogoutButton";
-import UpdateProfilePage from "./pages/UpdateProfilePage";
-import CreatePost from "./components/CreatePost";
-import ChatPage from "./pages/ChatPage";
-import SettingsPage from "./pages/SettingsPage";
-import SearchPage from "./pages/SearchPage";
+
+// Optimized by using Code splitting & Lazy loading pages
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AuthPage = lazy(() => import('./pages/AuthPage'));
+const UserPage = lazy(() => import('./pages/UserPage'));
+const PostPage = lazy(() => import('./pages/PostPage'));
+const UpdateProfilePage = lazy(() => import('./pages/UpdateProfilePage'));
+const CreatePost = lazy(() => import('./components/CreatePost'));
+const ChatPage = lazy(() => import('./pages/ChatPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
+
 function App() {
 
   const user = useRecoilValue(userAtom);
@@ -24,6 +28,11 @@ function App() {
     <Box position={"relative"} w={"full"}>
     <Container maxW={pathname === "/" ? {base: "620px", md: "900px"} : "650px"}>
       <Header/>
+      <Suspense fallback={
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
+        }>
       <Routes>
        <Route path='/' element={user ? <HomePage/> : <Navigate to='/authpage'/>} />
        <Route path='/authpage' element={!user ? <AuthPage/> : <Navigate to='/'/>} />
@@ -42,6 +51,7 @@ function App() {
        <Route path="/searchUser" element={ user ? <SearchPage/> : <Navigate to='/authpage'/>}/>
        <Route path="/settings" element={ user ? <SettingsPage/> : <Navigate to='/authpage'/>}/>
     </Routes>
+    </Suspense>
 
     {/* {user ? <LogoutButton/> : <Navigate to='/authpage'/>} */}
     {/* {user && <CreatePost/>} */}

@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useRecoilValue } from "recoil";
-import SignupBox from '../components/SignUpBox';
-import LoginBox from '../components/LoginBox';
 import authScreenAtom from "../atoms/authAtom";
+
+// Lazy load components
+const SignupBox = lazy(() => import('../components/SignUpBox'));
+const LoginBox = lazy(() => import('../components/LoginBox'));
 
 const AuthPage = () => {
 	const authScreenState = useRecoilValue(authScreenAtom);
-	return <>
-        {authScreenState === "login" ? <LoginBox /> : <SignupBox />}
-    </>;
+	return (
+        <Suspense fallback={<div>Loading...</div>}>
+            {authScreenState === "login" ? <LoginBox /> : <SignupBox />}
+        </Suspense>
+    );
 };
 
 export default AuthPage;

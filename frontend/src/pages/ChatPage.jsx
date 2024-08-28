@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {lazy, Suspense, useEffect, useState} from 'react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Box, Flex, Input, useColorModeValue, Button, Text, SkeletonCircle, Skeleton } from '@chakra-ui/react';
-import Conversation from '../components/Conversation';
 import { GiConversation } from 'react-icons/gi';
-import MessageContainer from '../components/MessageContainer';
 import usePopToast from "../customHooks/usePopToast";
 import {conversationsAtom} from '../atoms/messagesAtom';
 import { useRecoilState, useRecoilValue} from "recoil";
@@ -11,8 +9,11 @@ import {selectedChatAtom} from '../atoms/messagesAtom';
 import userAtom from '../atoms/userAtom';
 import { useSocket } from '../context/SocketContext';
 
+const Conversation = lazy(() => import("../components/Conversation"));
+const MessageContainer = lazy(() => import("../components/MessageContainer"));
+
 const ChatPage = () => {
-  //
+
   const [loadConversations, setLoadConversations] = useState(true);
   const [searchUserText, setSearchUserText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -153,11 +154,17 @@ const ChatPage = () => {
                 </Flex>
             ))}
 
-            {!loadConversations && 
-             conversations.map((conversation) => (
-                <Conversation key={conversation._id} conversation={conversation} 
-                isOnline={onlineUsers.includes(conversation.participants[0]._id)} />          
-            ))}
+            {!loadConversations &&
+            <Suspense fallback={<SkeletonCircle size={"10"} />}>
+              {conversations.map((conversation) => (
+                <Conversation
+                  key={conversation._id}
+                  conversation={conversation}
+                  isOnline={onlineUsers.includes(conversation.participants[0]._id)}
+                />
+              ))}
+            </Suspense>
+            }
             
             
         </Flex>
@@ -167,7 +174,12 @@ const ChatPage = () => {
           <Text>Select a Conversation to start messaging</Text>
         </Flex>
         )}
-        {selectedChat._id && <MessageContainer/>}
+
+        {selectedChat._id && (
+          <Suspense fallback={<Skeleton height="400px" />}>
+            <MessageContainer />
+          </Suspense>
+        )}
         
       </Flex>
     </Box>
