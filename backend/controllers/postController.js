@@ -1,6 +1,3 @@
-// const User = require("../models/userModel");
-// const Post = require("../models/postModel");
-// const cloudinary = require('cloudinary').v2;
 
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
@@ -193,7 +190,4 @@ export const getUserPosts = async (req, res) => {
 	}
 };
 
-//
-
-// module.exports = {createPost, getPost, deletePost, likeUnlikePost, replyOnPost, getFeedPosts, getUserPosts};
 

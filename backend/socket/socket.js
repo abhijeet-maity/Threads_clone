@@ -1,10 +1,4 @@
 
-// const {Server} = require('socket.io');
-// const http = require('http');
-// const express = require('express');
-// const Message = require('../models/messageModel');
-// const Conversation = require('../models/conversationModel');
-
 import { Server } from 'socket.io';
 import http from 'http';
 import express from 'express';
@@ -58,5 +52,4 @@ io.on('connection', (socket) => {
 });
 
 export {io, app, server, getReceiverSocketId};
-// module.exports = {io, app, server, getReceiverSocketId};
 

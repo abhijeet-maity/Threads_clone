@@ -1,8 +1,3 @@
-// const Conversation = require('../models/conversationModel');
-// const Message = require('../models/messageModel');
-// const cloudinary = require('cloudinary').v2;
-// const { getReceiverSocketId, io } = require('../socket/socket');
-
 
 import Conversation from '../models/conversationModel.js';
 import Message from '../models/messageModel.js';
@@ -117,7 +112,7 @@ export const getConversations = async (req, res) => {
     }
 };
 
-// module.exports = {sendMessage, getMessages, getConversations};
+
 
 
 

@@ -1,9 +1,3 @@
-// const User = require("../models/userModel");
-// const Post = require("../models/postModel");
-// const bcrypt = require("bcryptjs");
-// const generateTokenAndSetCookie = require("../utils/generateTokenAndSetCookie");
-// const cloudinary = require('cloudinary').v2;
-// const mongoose = require('mongoose');
 
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
@@ -398,16 +392,4 @@ export const deleteUser = async (req, res) => {
   
 };
 
-// module.exports = {
-//   signupUser,
-//   loginUser,
-//   logoutUser,
-//   followUnfollowUser,
-//   updateUser,
-//   getUserProfile,
-//   getSuggestedUsers,
-//   freeze,
-//   getMultipleUsersProfiles,
-//   getUserFollowers,
-//   getUserFollowings
-// };
+

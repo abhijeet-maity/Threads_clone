@@ -1,7 +1,3 @@
-// const express = require('express');
-// const protectRoute = require('../middlewares/protectRoute');
-// const {createPost, getPost, deletePost, likeUnlikePost, replyOnPost, getFeedPosts, getUserPosts} = require('../controllers/postController');
-
 
 import express from 'express';
 import protectRoute from '../middlewares/protectRoute.js';
@@ -26,5 +22,3 @@ router.get("/user/:username", getUserPosts);
 router.get("/:id", getPost);
 
 export default router;
-
-// module.exports = router;

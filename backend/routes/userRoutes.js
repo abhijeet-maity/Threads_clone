@@ -1,7 +1,3 @@
-// const express = require('express');
-// const {signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, getUserProfile, getSuggestedUsers, freeze, getMultipleUsersProfiles, getUserFollowers, getUserFollowings} = require('../controllers/userController');
-// const protectRoute = require('../middlewares/protectRoute');
-
 
 import express from 'express';
 import {
@@ -37,5 +33,3 @@ router.put('/freeze',protectRoute, freeze);
 router.delete('/delete',protectRoute, deleteUser);
 
 export default router;
-
-// module.exports = router;
