@@ -168,6 +168,6 @@ The application is deployed on Render. You can access it https://threads-clone-x
 1. **Push your code to a GitHub repository.**
 2. **Connect your Render account to your GitHub repository.**
 3. **Deploy the frontend and backend separately on Render, ensuring that the environment variables are set correctly.**
-4. **You can deploy them together on single port also where frotend and backend is combined**
+4. **You can also deploy them together on single port also where frotend and backend is combined**
 
 
