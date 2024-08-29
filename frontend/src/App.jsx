@@ -29,9 +29,23 @@ function App() {
     <Container maxW={pathname === "/" ? {base: "620px", md: "900px"} : "650px"}>
       <Header/>
       <Suspense fallback={
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
+          <div className='loading-box-container'>
+          <div className='loading-box'>
+            <div className='loading-box-innerbox'></div>
+            <div className='loading-box-innerline'></div>
+            <div className='loading-box-smallline'></div>
           </div>
+          <div className='loading-box'>
+            <div className='loading-box-innerbox'></div>
+            <div className='loading-box-innerline'></div>
+            <div className='loading-box-smallline'></div>
+          </div>
+          <div className='loading-box'>
+            <div className='loading-box-innerbox'></div>
+            <div className='loading-box-innerline'></div>
+            <div className='loading-box-smallline'></div>
+          </div>
+        </div>
         }>
       <Routes>
        <Route path='/' element={user ? <HomePage/> : <Navigate to='/authpage'/>} />
