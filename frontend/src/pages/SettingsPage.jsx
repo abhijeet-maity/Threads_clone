@@ -7,7 +7,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 
 //Lazy Loaded components
-const DisplayUserList = lazy(() => import('./DisplayUserList'));
+const DisplayUserList = lazy(() => import('../components/DisplayUserList'));
 
 const SettingsPage = () => {
     const [getFollowers, setGetFollowers] = useState(false);
